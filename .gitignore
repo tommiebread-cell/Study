@@ -1,0 +1,16 @@
+# C++ build output
+reference/cpp/*.o
+reference/cpp/gmm
+
+# .NET build output
+bin/
+obj/
+
+# Node
+node_modules/
+
+# Editors and OS
+.DS_Store
+*.swp
+.vscode/
+.idea/

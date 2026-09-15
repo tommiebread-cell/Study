@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<meta name="description" content="An interactive vault for dynamic panel estimation: Nickell bias, Difference and System GMM, diagnostics, and a live simulation lab.">
+<title>GMM vault — dynamic panel data</title>
+<link rel="stylesheet" href="src/styles/tokens.css">
+<link rel="stylesheet" href="src/styles/app.css">
+</head>
+<body>
+<div class="app">
+  <nav class="ribbon" aria-label="Vault actions">
+    <button class="rb" id="ribbonNav" title="Toggle the note list" aria-label="Toggle the note list">
+      <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2.5" width="12" height="11" rx="1.5"/><path d="M6.4 2.5v11"/></svg>
+    </button>
+    <button class="rb" id="ribbonPalette" title="Quick switcher (Ctrl+P)" aria-label="Quick switcher">
+      <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="4.2"/><path d="M10.2 10.2 14 14"/></svg>
+    </button>
+    <button class="rb" id="ribbonGraph" title="Graph view (Ctrl+G)" aria-label="Graph view">
+      <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="3.6" r="2"/><circle cx="3.4" cy="12" r="1.8"/><circle cx="12.6" cy="11" r="1.8"/><path d="M6.9 5.3 4.3 10.3M9.4 5.2l2.4 4.1M5.2 12.2h5.6"/></svg>
+    </button>
+    <button class="rb" id="ribbonHome" title="Back to Start here" aria-label="Back to Start here">
+      <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 6.9 8 2.6l5.4 4.3v6.1a.5.5 0 0 1-.5.5H3.1a.5.5 0 0 1-.5-.5Z"/><path d="M6.3 13.5V9.4h3.4v4.1"/></svg>
+    </button>
+    <button class="rb" id="sidebarToggle" title="Toggle the note panel" aria-label="Toggle the note panel">
+      <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2.5" width="12" height="11" rx="1.5"/><path d="M9.6 2.5v11"/></svg>
+    </button>
+    <button class="rb bot" id="ribbonTheme" title="Toggle light and dark" aria-label="Toggle light and dark">
+      <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9.9 2.4a5.8 5.8 0 1 0 3.8 7.3 4.9 4.9 0 0 1-3.8-7.3Z"/></svg>
+    </button>
+  </nav>
+
+  <aside class="side left" aria-label="Note list">
+    <div class="sh">Vault<button class="x" id="navClose" title="Close" aria-label="Close the note list">×</button></div>
+    <div class="srch"><input id="filter" type="search" placeholder="Filter notes" aria-label="Filter notes"></div>
+    <div class="tree" id="tree"></div>
+  </aside>
+
+  <main class="main">
+    <div class="tabs" id="tabs" role="tablist" aria-label="Open notes"></div>
+    <div id="panes"></div>
+  </main>
+
+  <aside class="side right" aria-label="Current note">
+    <div class="sh">Note</div>
+    <section class="sblock"><h2>Outline</h2><ul class="ol" id="outline"></ul></section>
+    <section class="sblock"><h2>Local graph</h2>
+      <canvas id="localGraph" aria-label="Graph of notes linked to this one"></canvas>
+    </section>
+    <section class="sblock"><h2>Backlinks</h2><div id="backlinks"></div></section>
+    <section class="sblock"><h2>Links from here</h2><div id="outlinks"></div></section>
+  </aside>
+
+  <div class="status">
+    <span id="statusNotes"></span><span id="statusRead"></span><span id="statusSession"></span>
+    <span class="sp"><button id="statusPalette">Ctrl+P for commands</button></span>
+  </div>
+</div>
+
+<div class="ov" id="paletteOverlay" aria-hidden="true">
+  <div class="pal" role="dialog" aria-modal="true" aria-label="Quick switcher">
+    <input id="paletteInput" type="text" placeholder="Find a note, or type &gt; for commands"
+           aria-label="Find a note" autocomplete="off" role="combobox"
+           aria-expanded="true" aria-controls="paletteList">
+    <ul id="paletteList" role="listbox" aria-label="Results"></ul>
+  </div>
+</div>
+
+<div class="ov" id="graphOverlay" aria-hidden="true">
+  <div class="gwrap" role="dialog" aria-modal="true" aria-label="Graph view">
+    <div class="gh">
+      <b>Graph view</b>
+      <span id="graphLegend"></span>
+      <button class="btn push" id="graphClose">Close</button>
+    </div>
+    <canvas id="graphCanvas"></canvas>
+  </div>
+</div>
+
+<div class="peek" id="peek" role="tooltip"></div>
+
+<noscript>
+  <p class="noscript">This vault is an interactive study tool — the notes, the simulation lab and
+  the graph are all built in the browser, so it needs JavaScript enabled.</p>
+</noscript>
+
+<script type="module" src="src/js/main.js"></script>
+</body>
+</html>
