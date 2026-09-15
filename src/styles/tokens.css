@@ -1,42 +1,15 @@
-/* Design tokens. Dark is the default; `body.light` and the media query below
-   supply the light values. Every colour in app.css goes through one of these. */
+/* Design tokens.
+ *
+ * Three theme states, per the Artifact page contract: bare :root carries the
+ * complete light palette; the dark palette is applied when the viewer's OS
+ * prefers dark and they have not explicitly chosen light, and again when
+ * data-theme="dark" is stamped so the in-app toggle wins in both directions.
+ *
+ * Every colour in app.css goes through one of these, so no component style
+ * ever lives inside a media or [data-theme] block.
+ */
 
 :root {
-  --bg0: #141517;
-  --bg1: #1c1e22;
-  --bg2: #17181b;
-  --bg3: #26282d;
-  --bg4: #2f323a;
-
-  --bd: #33363d;
-  --tx: #dcdddd;
-  --tx2: #9a9a9a;
-  --tx3: #6f6f6f;
-
-  --ac: #a882ff;
-  --ac2: #8965e0;
-  --acw: #2b2140;
-
-  --info: #5aa9e6;
-  --warn: #e0a34b;
-  --dang: #e0645f;
-  --succ: #6fc99a;
-
-  /* Tinted fills for the grid cells, so they read in both themes. */
-  --iv-fill: rgba(90, 169, 230, 0.14);
-  --right-fill: rgba(111, 201, 154, 0.10);
-  --wrong-fill: rgba(224, 100, 95, 0.10);
-  --shadow: rgba(0, 0, 0, 0.45);
-
-  --sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  --ser: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-
-  --measure: 62ch;
-  --radius: 6px;
-}
-
-body.light {
   --bg0: #e7e8ea;
   --bg1: #ffffff;
   --bg2: #f4f4f5;
@@ -57,8 +30,72 @@ body.light {
   --dang: #b03a36;
   --succ: #1f7a52;
 
+  /* Tinted fills for the grid cells and quiz options. */
   --iv-fill: rgba(42, 114, 173, 0.12);
   --right-fill: rgba(31, 122, 82, 0.10);
   --wrong-fill: rgba(176, 58, 54, 0.09);
   --shadow: rgba(15, 15, 25, 0.18);
+
+  --sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --ser: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Liberation Serif", serif;
+
+  --measure: 62ch;
+  --radius: 6px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg0: #141517;
+    --bg1: #1c1e22;
+    --bg2: #17181b;
+    --bg3: #26282d;
+    --bg4: #2f323a;
+
+    --bd: #33363d;
+    --tx: #dcdddd;
+    --tx2: #9a9a9a;
+    --tx3: #6f6f6f;
+
+    --ac: #a882ff;
+    --ac2: #8965e0;
+    --acw: #2b2140;
+
+    --info: #5aa9e6;
+    --warn: #e0a34b;
+    --dang: #e0645f;
+    --succ: #6fc99a;
+
+    --iv-fill: rgba(90, 169, 230, 0.14);
+    --right-fill: rgba(111, 201, 154, 0.10);
+    --wrong-fill: rgba(224, 100, 95, 0.10);
+    --shadow: rgba(0, 0, 0, 0.45);
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg0: #141517;
+  --bg1: #1c1e22;
+  --bg2: #17181b;
+  --bg3: #26282d;
+  --bg4: #2f323a;
+
+  --bd: #33363d;
+  --tx: #dcdddd;
+  --tx2: #9a9a9a;
+  --tx3: #6f6f6f;
+
+  --ac: #a882ff;
+  --ac2: #8965e0;
+  --acw: #2b2140;
+
+  --info: #5aa9e6;
+  --warn: #e0a34b;
+  --dang: #e0645f;
+  --succ: #6fc99a;
+
+  --iv-fill: rgba(90, 169, 230, 0.14);
+  --right-fill: rgba(111, 201, 154, 0.10);
+  --wrong-fill: rgba(224, 100, 95, 0.10);
+  --shadow: rgba(0, 0, 0, 0.45);
 }

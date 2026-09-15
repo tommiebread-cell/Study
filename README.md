@@ -17,12 +17,28 @@ checked against each other.
 ## Quick start
 
 ```bash
-npm start           # http://127.0.0.1:8080
+npm install         # esbuild, the only dependency
+npm start           # http://127.0.0.1:8080 — the module build, for development
+npm run build       # dist/vault.html — one self-contained file, opens from disk
 ```
 
-The vault is plain ES modules with no dependencies and no build step, but browsers refuse to load
-modules over `file://`, so it needs to be served. `npm start` runs a ~70-line static server; any
-other static server works equally well.
+During development the vault is plain ES modules, which browsers refuse to load over `file://`,
+so `npm start` serves them. `npm run build` rolls everything — 20 modules, both stylesheets — into
+a single ~145 KB HTML file with no external references, which you can double-click, email, or drop
+on any static host.
+
+`npm run build:artifact` emits the same page without a `<!doctype>`/`<head>`/`<body>` of its own,
+which is the shape claude.ai expects when publishing it as an Artifact.
+
+## Asking Claude
+
+Published as an Artifact, each note gets an **ask** button in its header: a question box that sends
+your question plus the note's text to Claude and streams the answer back, on your own Claude
+account. It uses the artifact runtime's `sample` capability.
+
+The feature is strictly additive. Anywhere else — the dev server, the standalone file, any other
+host — `window.claude` is absent, the capability resolves to nothing, and the button never appears.
+Nothing else in the vault depends on it.
 
 ## Layout
 
@@ -36,6 +52,7 @@ src/
     graph.js                   link graph, backlinks, edge list, rendering
     router.js                  the pane stack — the only navigation state
     session.js                 read marks, quiz answers, flagged cards, runs
+    ask.js                     "ask Claude" — artifact runtime only, absent elsewhere
     mathify.js                 upright/italic typesetting for the maths runs
     plots.js                   canvas helpers and the two charts
     main.js                    wiring
@@ -49,8 +66,9 @@ reference/
   csharp/DynamicPanel/         .NET 8 port
   stata/dynamic_panel.do       what you would actually run on data
   r/dynamic_panel.R
-tools/                         snippets, crosscheck, dev server
+tools/                         bundler, snippets, crosscheck, dev server
 tests/                         node:test suites
+dist/                          build output (gitignored)
 ```
 
 ## The three implementations

@@ -196,6 +196,33 @@ body {
 .pbody { overflow-y: auto; padding: 20px 26px 60vh; }
 .pbody:focus { outline: none; }
 
+/* Asking Claude only exists inside a published artifact, so the affordance
+   stays hidden until the runtime actually grants it. */
+.ask-toggle { display: none; }
+body.can-ask .ask-toggle { display: inline; color: var(--ac); }
+body.can-ask .ask-toggle:hover { color: var(--ac2); }
+
+.ask-panel {
+  border: 1px solid var(--bd); border-left: 3px solid var(--ac);
+  background: var(--bg2); border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 11px 13px; margin: 0 0 18px; max-width: var(--measure);
+}
+.ask-form { display: flex; flex-direction: column; gap: 6px; }
+.ask-label { font-size: 11.5px; color: var(--tx3); }
+.ask-input {
+  width: 100%; resize: vertical; min-height: 44px;
+  background: var(--bg1); border: 1px solid var(--bd); border-radius: 5px;
+  color: var(--tx); font: inherit; font-family: var(--sans); font-size: 13.5px; padding: 6px 8px;
+}
+.ask-note { margin-left: auto; }
+.ask-answer {
+  font-family: var(--sans); font-size: 13.5px; line-height: 1.6;
+  color: var(--tx); white-space: pre-wrap; margin-top: 10px;
+  padding-top: 10px; border-top: 1px solid var(--bd);
+}
+.ask-answer.thinking { color: var(--tx3); font-style: italic; }
+.ask-answer.vd { border-top: 0; padding-top: 8px; }
+
 /* ------------------------------------------------------------ typography -- */
 
 .pbody h1 {

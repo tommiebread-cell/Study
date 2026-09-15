@@ -78,7 +78,11 @@ export function drawDistributions(canvas, series, rho) {
   let hi = Math.min(bounds.hi + 0.06, 1.9);
   if (hi - lo < 0.25) { lo -= 0.12; hi += 0.12; }
 
-  const left = 62;
+  // Size the gutter to the widest label rather than guessing: "Difference GMM"
+  // does not fit the width that "sd" would suggest.
+  ctx.font = '10.5px -apple-system, system-ui, sans-serif';
+  const widest = series.reduce((w, s) => Math.max(w, ctx.measureText(s.name).width), 0);
+  const left = Math.min(Math.round(widest) + 14, Math.max(70, width * 0.32));
   const right = 10;
   const top = 8;
   const baseline = height - 16;

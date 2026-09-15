@@ -12,6 +12,7 @@ import { openNote, closePane, focusPane, subscribe, activeIndex } from '../route
 import { isRead, toggleRead, onSessionChange } from '../session.js';
 import { mathify } from '../mathify.js';
 import { mountTools } from '../tools/index.js';
+import { createAskPanel } from '../ask.js';
 import { drawLocalGraph } from './graphview.js';
 
 export function createPanes({ container, tabs, outline, localGraph, backlinksBox, outlinksBox }) {
@@ -26,6 +27,8 @@ export function createPanes({ container, tabs, outline, localGraph, backlinksBox
     return `
       <div class="ph">
         <span class="crumb">${escapeHtml(note.folder)} / ${escapeHtml(note.title)}</span>
+        <button class="pb ask-toggle" data-ask-toggle aria-expanded="false"
+                title="Ask Claude about this note">✳ ask</button>
         <button class="pb${read ? ' rd' : ''}" data-read="${escapeHtml(note.id)}"
                 aria-pressed="${read}">${read ? '✓ read' : '○ read'}</button>
         ${total > 1 ? `<button class="pb" data-close="${index}" title="Close pane"
@@ -50,6 +53,17 @@ export function createPanes({ container, tabs, outline, localGraph, backlinksBox
     mountTools(pane, note);
 
     const body = pane.querySelector('.pbody');
+
+    // Only reachable once the runtime grants sampling; CSS hides the toggle
+    // until then, so a pane built early behaves like one built late.
+    const askPanel = createAskPanel(id);
+    body.insertBefore(askPanel, body.querySelector('.meta').nextSibling);
+    pane.querySelector('[data-ask-toggle]').onclick = (event) => {
+      askPanel.hidden = !askPanel.hidden;
+      event.currentTarget.setAttribute('aria-expanded', String(!askPanel.hidden));
+      if (!askPanel.hidden) askPanel.querySelector('.ask-input').focus();
+    };
+
     body.addEventListener('scroll', () => {
       if (Number(pane.dataset.index) === activeIndex()) markCurrentHeading(pane);
     }, { passive: true });

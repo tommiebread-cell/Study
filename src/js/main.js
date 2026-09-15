@@ -7,6 +7,7 @@ import { NOTES, byId, EDGES, escapeHtml, registerVirtual } from './graph.js';
 import { openNote, start, closePane, closeOthers, currentId, activeIndex } from './router.js';
 import { session, load as loadSession, markRead, clearRead, onSessionChange } from './session.js';
 import { observe as observeMaths } from './mathify.js';
+import { enableAskWhenAvailable } from './ask.js';
 import { createPanes } from './ui/panes.js';
 import { createExplorer } from './ui/explorer.js';
 import { createPalette } from './ui/palette.js';
@@ -29,7 +30,7 @@ function readStoredTheme() {
 }
 
 function applyTheme(theme) {
-  document.body.classList.toggle('light', theme === 'light');
+  document.documentElement.dataset.theme = theme;
   try {
     localStorage.setItem(THEME_KEY, theme);
   } catch {
@@ -37,16 +38,27 @@ function applyTheme(theme) {
   }
 }
 
-function initialTheme() {
+/** What the page is actually showing right now, stamped or inherited. */
+function effectiveTheme() {
+  const stamped = document.documentElement.dataset.theme;
+  if (stamped === 'light' || stamped === 'dark') return stamped;
+  return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+/**
+ * Only stamp when the reader has chosen before. Left unstamped, the host's
+ * theme governs — which is what a viewer that sets its own theme expects.
+ */
+function restoreTheme() {
   const stored = readStoredTheme();
-  if (stored === 'light' || stored === 'dark') return stored;
-  return matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  if (stored === 'light' || stored === 'dark') document.documentElement.dataset.theme = stored;
 }
 
 /* ------------------------------------------------------------------ boot ---- */
 
 loadSession();
-document.body.classList.toggle('light', initialTheme() === 'light');
+restoreTheme();
+enableAskWhenAvailable();
 
 observeMaths($('panes'));
 
@@ -70,7 +82,7 @@ const graphView = createGraphView({
 });
 
 const toggleTheme = () => {
-  applyTheme(document.body.classList.contains('light') ? 'dark' : 'light');
+  applyTheme(effectiveTheme() === 'light' ? 'dark' : 'light');
   panes.refresh();
 };
 
