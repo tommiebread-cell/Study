@@ -5,6 +5,7 @@
 import { NOTES, FOLDERS, escapeHtml } from '../graph.js';
 import { currentId, subscribe } from '../router.js';
 import { isRead, onSessionChange } from '../session.js';
+import { icon } from '../icons.js';
 
 export function createExplorer({ tree, filter }) {
   const collapsed = new Set();
@@ -35,7 +36,7 @@ export function createExplorer({ tree, filter }) {
       return `
         <div class="fold${open ? '' : ' shut'}">
           <button class="fh" data-folder="${escapeHtml(folder)}" aria-expanded="${open}">
-            <span class="cv" aria-hidden="true">▾</span>${escapeHtml(folder)}
+            <span class="cv" aria-hidden="true">${icon('chevron-down')}</span>${escapeHtml(folder)}
             <span class="count">${items.length}</span>
           </button>
           <div class="fkids">${children}</div>

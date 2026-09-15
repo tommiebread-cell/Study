@@ -6,9 +6,20 @@
  */
 
 export const NOTES = [
+{ id: 'today', title: 'Today', folder: 'Daily', tags: ['planner'], tools: ['hero', 'planner', 'pomodoro'], body: `
+<div data-tool></div>
+<div data-tool></div>
+<div data-tool></div>
+<h2>Where to go next</h2>
+<p>New here? [[start-here|Start here]] lays out the reading order. Working through it already?
+Pick up at the [[review|review queue]], which fills itself from what you have missed, or open the
+[[simulation|simulation lab]] and watch the estimators come apart at ρ = 0.9.</p>
+<p class="mini">The plan and the focus tally are kept in this browser only — they never leave your
+device, and they reset when you clear site data.</p>` },
+
 { id: 'start-here', title: 'Start here', folder: 'Setup', tags: ['moc'], body: `
 <p>A vault for dynamic panel estimation: models with a lagged dependent variable, a fixed effect, and not enough time periods to ignore the interaction between them.</p>
-<div class="callout" data-t="quote"><div class="ct">▸ The object of study</div><p class="m" style="font-size:1.05rem">y<sub>it</sub> = ρ y<sub>i,t−1</sub> + X<sub>it</sub>β + μ<sub>i</sub> + u<sub>it</sub></p><p>N units, T periods, T short. Every note here is about one consequence of that setup.</p></div>
+<div class="callout" data-t="quote"><div class="ct">The object of study</div><p class="m" style="font-size:1.05rem">y<sub>it</sub> = ρ y<sub>i,t−1</sub> + X<sub>it</sub>β + μ<sub>i</sub> + u<sub>it</sub></p><p>N units, T periods, T short. Every note here is about one consequence of that setup.</p></div>
 <h2>Read in this order</h2>
 <ul>
 <li>[[panel-grid|The panel grid]] — click through the data and see which lags are legal instruments.</li>
@@ -26,7 +37,7 @@ export const NOTES = [
 <li>[[implementations|Implementations]] — the same estimator in JavaScript, C# and C++, checked against each other.</li>
 <li>[[flashcards|Flashcards]], [[quiz|Quiz]], [[review|Review queue]], [[cheat-sheet|Cheat sheet]].</li>
 </ul>
-<hr><p class="mini">Links open to the right, so the trail you followed stays visible. The graph button in the ribbon shows how the notes connect; <kbd>Ctrl</kbd>+<kbd>P</kbd> jumps anywhere, and <kbd>Ctrl</kbd>+<kbd>P</kbd> then <code>&gt;</code> runs a command.</p>` },
+<hr><p class="mini">Links open to the right, so the trail you followed stays visible. The graph button in the ribbon shows how the notes connect; <kbd>Ctrl</kbd>+<kbd>P</kbd> jumps anywhere, and <kbd>Ctrl</kbd>+<kbd>P</kbd> then <code>&gt;</code> runs a command. [[today|Today]] has the planner and the timer.</p>` },
 
 { id: 'panel-grid', title: 'The panel grid', folder: 'Setup', tags: ['intuition', 'small-t'], tools: ['grid'], body: `
 <p>Everything in this vault happens inside one object. Four units down, six periods across. Each row shares a single <span class="m">μ<sub>i</sub></span>, which is exactly what breaks the lagged dependent variable.</p>
@@ -45,7 +56,7 @@ export const NOTES = [
 <div class="eq">plim<sub>N→∞</sub> (ρ̂<sub>FE</sub> − ρ) ≈ −(1 + ρ) / (T − 1)
 <small>Leading term for the pure AR(1) case, T fixed. Negative, and O(1/T).</small></div>
 <div data-tool></div>
-<div class="callout" data-t="succ"><div class="ct">✓ The useful corollary</div><p>Because the bias runs downward for FE and upward for pooled OLS, the two estimates form a bracket. A GMM estimate outside it is wrong before you look at a single test. See [[cheat-sheet|cheat sheet]].</p></div>
+<div class="callout" data-t="succ"><div class="ct">The useful corollary</div><p>Because the bias runs downward for FE and upward for pooled OLS, the two estimates form a bracket. A GMM estimate outside it is wrong before you look at a single test. See [[cheat-sheet|cheat sheet]].</p></div>
 <p>The formula is a leading term, not a promise: in the [[simulation|simulation lab]] the realised FE bias usually runs a little past it — at ρ = 0.6 and T = 6 the formula says 0.28 and the simulation lands near 0.23. Source: [[nickell-1981|Nickell 1981]]. Response: [[arellano-bond-1991|Arellano–Bond 1991]].</p>` },
 
 { id: 'difference-gmm', title: 'Difference GMM', folder: 'Estimators', tags: ['estimator'], tools: ['weak'], body: `
@@ -60,7 +71,7 @@ export const NOTES = [
 <li>Two-step for efficiency, plus the [[windmeijer|Windmeijer correction]] for the standard errors.</li>
 <li>Collapse or cap before the count outruns N. See [[instruments|instrument proliferation]].</li>
 </ul>
-<div class="callout" data-t="warn"><div class="ct">⚠ Where it fails</div><p>As ρ approaches 1, <span class="m">y<sub>i,t−2</sub></span> barely predicts <span class="m">Δy<sub>i,t−1</sub></span> — a random walk has no news in its level. Weak instruments pull ρ̂ toward zero. That failure is what [[system-gmm|System GMM]] exists to fix.</p></div>
+<div class="callout" data-t="warn"><div class="ct">Where it fails</div><p>As ρ approaches 1, <span class="m">y<sub>i,t−2</sub></span> barely predicts <span class="m">Δy<sub>i,t−1</sub></span> — a random walk has no news in its level. Weak instruments pull ρ̂ toward zero. That failure is what [[system-gmm|System GMM]] exists to fix.</p></div>
 <h2>How weak, exactly?</h2>
 <p>The instrument only works through its correlation with the differenced lag it stands in for. Here is that correlation, simulated, as ρ moves toward 1.</p>
 <div data-tool></div>
@@ -89,7 +100,7 @@ export const NOTES = [
 <small>The estimator itself. R holds the regressors, Z the instruments, W the weight matrix. This line is literally what [[implementations|the code]] solves.</small></div>
 <div class="eq" data-n="4">W = (Z′HZ)<sup>−1</sup> one-step; &nbsp; W = (Z′Ω̂Z)<sup>−1</sup> two-step
 <small>One-step uses a fixed H — 2 on the diagonal, −1 off it, the MA(1) structure of Δu. Two-step builds Ω̂ from first-step residuals: efficient, but see [[windmeijer|Windmeijer]].</small></div>
-<div class="callout" data-t="dang"><div class="ct">✕ The exam trap</div><p>Which transformation instruments which equation. Levels instrument the <i>differenced</i> equation; differences instrument the <i>level</i> equation. Say it backwards in a viva and nothing you say afterwards will land.</p></div>` },
+<div class="callout" data-t="dang"><div class="ct">The exam trap</div><p>Which transformation instruments which equation. Levels instrument the <i>differenced</i> equation; differences instrument the <i>level</i> equation. Say it backwards in a viva and nothing you say afterwards will land.</p></div>` },
 
 { id: 'choosing', title: 'Choosing an estimator', folder: 'Estimators', tags: ['decision'], tools: ['chooser'], body: `
 <p>Three questions settle it, and none of them is about your coefficient. The estimator follows from the shape of the data.</p>
@@ -105,7 +116,7 @@ export const NOTES = [
 <li>The [[hansen|Hansen test]] loses power as the count rises. A p-value near 1 is a test that can no longer detect anything.</li>
 <li>Collapsing sums each moment condition across periods instead of keeping one per period per lag. Identification survives; redundancy goes. You can see the two layouts side by side in [[implementations|the code]].</li>
 </ul>
-<div class="callout" data-t="warn"><div class="ct">⚠ Report it</div><p>Put the instrument count next to N in every table. A count above N is a specification you have to defend, not one you publish quietly. From [[roodman-2009|Roodman 2009]].</p></div>` },
+<div class="callout" data-t="warn"><div class="ct">Report it</div><p>Put the instrument count next to N in every table. A count above N is a specification you have to defend, not one you publish quietly. From [[roodman-2009|Roodman 2009]].</p></div>` },
 
 { id: 'diagnostics', title: 'Diagnostics', folder: 'Practice', tags: ['testing'], tools: ['diag'], body: `
 <p>Two tests carry the specification: [[ar-tests|AR(2)]] for the error structure, [[hansen|Hansen J]] for the instruments. Paste your output and read them together.</p>
@@ -125,7 +136,7 @@ export const NOTES = [
 <p>Differencing makes <span class="m">Δu<sub>it</sub></span> and <span class="m">Δu<sub>i,t−1</sub></span> share <span class="m">u<sub>i,t−1</sub></span>. The correlation is manufactured by the transformation, so rejection is the expected reading. Report it, do not interpret it.</p>
 <h2>AR(2) is the one that matters</h2>
 <p>Second-order correlation in <span class="m">Δu</span> would mean first-order correlation in <span class="m">u</span> itself, which invalidates <span class="m">y<sub>i,t−2</sub></span> as an instrument. Failing to reject is what licenses [[moment-conditions|moment condition 1]].</p>
-<div class="callout" data-t="dang"><div class="ct">✕ If AR(2) rejects</div><p>Move the lag window one period deeper — instruments from lag 3 — or respecify the dynamics; an additional lag of y on the right-hand side often absorbs the correlation. Do not proceed on the grounds that everything else looks fine.</p></div>
+<div class="callout" data-t="dang"><div class="ct">If AR(2) rejects</div><p>Move the lag window one period deeper — instruments from lag 3 — or respecify the dynamics; an additional lag of y on the right-hand side often absorbs the correlation. Do not proceed on the grounds that everything else looks fine.</p></div>
 <p>Interpret real numbers in [[diagnostics|diagnostics]].</p>` },
 
 { id: 'hansen', title: 'Hansen test', folder: 'Practice', tags: ['testing'], body: `
@@ -138,12 +149,12 @@ export const NOTES = [
 <li><b>p below 0.05.</b> The restrictions are rejected. Something in <span class="m">Z</span> is correlated with the error; drop the suspect block or shorten the lag window.</li>
 <li><b>p near 1.</b> Not a clean bill of health. Almost always [[instruments|too many instruments]], leaving a test with no power to detect a violation.</li>
 </ul>
-<div class="callout" data-t="quote"><div class="ct">▸ Difference-in-Hansen</div><p>The incremental version: compares the Hansen statistic with and without the level-equation moments. This is the test of [[system-gmm|System GMM]]'s mean-stationarity assumption, and the one referees ask for.</p></div>` },
+<div class="callout" data-t="quote"><div class="ct">Difference-in-Hansen</div><p>The incremental version: compares the Hansen statistic with and without the level-equation moments. This is the test of [[system-gmm|System GMM]]'s mean-stationarity assumption, and the one referees ask for.</p></div>` },
 
 { id: 'windmeijer', title: 'Windmeijer correction', folder: 'Practice', tags: ['testing', 'reference'], body: `
 <p>Two-step GMM is efficient, but its standard errors are severely downward biased in finite samples: the weight matrix is estimated from first-step residuals, and the usual formula ignores that estimation.</p>
 <p>Windmeijer's 2005 correction adjusts the covariance matrix for the dependence of the weight matrix on the first-step estimates. Without it, everything looks sharper than it is.</p>
-<div class="callout" data-t="succ"><div class="ct">✓ In practice</div><p>In Stata, <code>twostep robust</code> applies it. In R, <code>summary(model, robust = TRUE)</code> after a <code>model = "twosteps"</code> fit. See [[code|code]].</p></div>
+<div class="callout" data-t="succ"><div class="ct">In practice</div><p>In Stata, <code>twostep robust</code> applies it. In R, <code>summary(model, robust = TRUE)</code> after a <code>model = "twosteps"</code> fit. See [[code|code]].</p></div>
 <p>Paper: [[windmeijer-2005|Windmeijer 2005]].</p>` },
 
 { id: 'code', title: 'Code in five languages', folder: 'Practice', tags: ['code'], tools: ['code'], body: `
@@ -170,7 +181,7 @@ export const NOTES = [
 <h2>The trick that makes them comparable</h2>
 <p>All three share a deliberately boring random number generator: xorshift32 for the uniform, Box–Muller for the normal, with a 24-bit mantissa so no language rounds differently. Seeded identically, they walk the same stream, so the estimates should agree to floating-point noise rather than merely "look similar".</p>
 <div data-tool></div>
-<div class="callout" data-t="succ"><div class="ct">✓ What the check actually asserts</div><p><code>npm run crosscheck</code> runs all three drivers at the same seed and fails if any estimate differs by more than 1e-9 relative. Observed: about 2e-16, which is one unit in the last place.</p></div>
+<div class="callout" data-t="succ"><div class="ct">What the check actually asserts</div><p><code>npm run crosscheck</code> runs all three drivers at the same seed and fails if any estimate differs by more than 1e-9 relative. Observed: about 2e-16, which is one unit in the last place.</p></div>
 <h2>Where the files are</h2>
 <table class="t"><tr><th>Language</th><th>Path</th></tr>
 <tr><td>JavaScript</td><td class="wrap"><code>src/js/sim/gmm.js</code> — also what this page runs</td></tr>
@@ -239,7 +250,7 @@ export const NOTES = [
 
 { id: 'simulation', title: 'Simulation lab', folder: 'Practice', tags: ['simulation', 'estimator', 'bias'], tools: ['mc'], body: `
 <p>Everything else in this vault is an argument about what these estimators do. This note runs them. The panel is generated in your browser from a known ρ, then estimated four ways, hundreds of times over.</p>
-<div class="callout" data-t="quote"><div class="ct">▸ The data generating process</div><p class="m">y<sub>it</sub> = ρ y<sub>i,t−1</sub> + μ<sub>i</sub> + ε<sub>it</sub></p><p>Stationary start, twenty burn-in periods, μ<sub>i</sub> and ε<sub>it</sub> normal. Pooled OLS, fixed effects, one-step Difference GMM and one-step System GMM, all estimated from the same draw so the comparison is clean.</p></div>
+<div class="callout" data-t="quote"><div class="ct">The data generating process</div><p class="m">y<sub>it</sub> = ρ y<sub>i,t−1</sub> + μ<sub>i</sub> + ε<sub>it</sub></p><p>Stationary start, twenty burn-in periods, μ<sub>i</sub> and ε<sub>it</sub> normal. Pooled OLS, fixed effects, one-step Difference GMM and one-step System GMM, all estimated from the same draw so the comparison is clean.</p></div>
 <div data-tool></div>
 <h2>Three experiments worth running</h2>
 <ul>
@@ -247,7 +258,7 @@ export const NOTES = [
 <li><b>ρ = 0.9.</b> [[difference-gmm|Difference GMM]] falls apart — the mean slides down and the spread explodes, because lagged levels stop predicting differences. [[system-gmm|System GMM]] barely notices. This is the [[blundell-bond-1998|Blundell–Bond]] result, reproduced live.</li>
 <li><b>T from 6 to 10.</b> The FE bias shrinks roughly like 1/T, exactly as [[nickell-bias|Nickell]] predicts, and at some point GMM stops being worth the trouble.</li>
 </ul>
-<div class="callout" data-t="warn"><div class="ct">⚠ What this is not</div><p>One-step estimators with a fixed weight matrix, no regressors beyond the lag, no time dummies, and no test statistics. It is a bias-and-spread machine, not a replacement for [[code|xtabond2 or pgmm]].</p></div>
+<div class="callout" data-t="warn"><div class="ct">What this is not</div><p>One-step estimators with a fixed weight matrix, no regressors beyond the lag, no time dummies, and no test statistics. It is a bias-and-spread machine, not a replacement for [[code|xtabond2 or pgmm]].</p></div>
 <p>Set a seed to make a run reproducible — the same seed gives the same panels in [[implementations|the C# and C++ ports]] too.</p>` },
 
 { id: 'review', title: 'Review queue', folder: 'Review', tags: ['drill'], tools: ['queue'], body: `

@@ -34,7 +34,7 @@ export function prepareCanvas(canvas) {
 }
 
 function placeholder(ctx, width, height, message) {
-  ctx.fillStyle = cssVar('--tx3');
+  ctx.fillStyle = cssVar('--ink-4');
   ctx.font = '12px -apple-system, system-ui, sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText(message, width / 2, height / 2);
@@ -89,14 +89,14 @@ export function drawDistributions(canvas, series, rho) {
   const laneHeight = (baseline - top) / series.length;
   const x = (v) => left + ((v - lo) / (hi - lo)) * (width - left - right);
 
-  ctx.strokeStyle = cssVar('--bd');
+  ctx.strokeStyle = cssVar('--rule');
   ctx.lineWidth = 1;
   ctx.beginPath();
   ctx.moveTo(left, baseline);
   ctx.lineTo(width - right, baseline);
   ctx.stroke();
 
-  ctx.fillStyle = cssVar('--tx3');
+  ctx.fillStyle = cssVar('--ink-4');
   ctx.font = '10px -apple-system, system-ui, sans-serif';
   ctx.textAlign = 'center';
   for (let k = 0; k <= 4; k++) {
@@ -104,14 +104,14 @@ export function drawDistributions(canvas, series, rho) {
     ctx.fillText(v.toFixed(2), x(v), height - 4);
   }
 
-  ctx.strokeStyle = cssVar('--ac');
+  ctx.strokeStyle = cssVar('--sage');
   ctx.setLineDash([3, 3]);
   ctx.beginPath();
   ctx.moveTo(x(rho), top);
   ctx.lineTo(x(rho), baseline);
   ctx.stroke();
   ctx.setLineDash([]);
-  ctx.fillStyle = cssVar('--ac');
+  ctx.fillStyle = cssVar('--sage');
   ctx.textAlign = 'left';
   ctx.fillText('true ρ', Math.min(x(rho) + 4, width - 40), top + 8);
 
@@ -148,7 +148,7 @@ export function drawDistributions(canvas, series, rho) {
       ctx.stroke();
     }
 
-    ctx.fillStyle = cssVar('--tx2');
+    ctx.fillStyle = cssVar('--ink-3');
     ctx.font = '10.5px -apple-system, system-ui, sans-serif';
     ctx.textAlign = 'right';
     ctx.fillText(s.name, left - 7, lane - 1);
@@ -172,7 +172,7 @@ export function drawFirstStageCurve(canvas, points, selectedRho) {
   const x = (rho) => left + (rho / RHO_CEILING) * (width - left - right);
   const y = (corr) => height - bottom - (corr / CORR_CEILING) * (height - top - bottom);
 
-  ctx.strokeStyle = cssVar('--bd');
+  ctx.strokeStyle = cssVar('--rule');
   ctx.lineWidth = 1;
   ctx.beginPath();
   ctx.moveTo(left, height - bottom);
@@ -181,26 +181,26 @@ export function drawFirstStageCurve(canvas, points, selectedRho) {
   ctx.lineTo(left, height - bottom);
   ctx.stroke();
 
-  ctx.fillStyle = cssVar('--tx3');
+  ctx.fillStyle = cssVar('--ink-4');
   ctx.font = '10px -apple-system, system-ui, sans-serif';
   ctx.textAlign = 'center';
   for (const rho of [0, 0.25, 0.5, 0.75, 0.95]) ctx.fillText(rho.toFixed(2), x(rho), height - 6);
   ctx.textAlign = 'right';
   for (const corr of [0, 0.25, 0.5]) ctx.fillText(corr.toFixed(2), left - 4, y(corr) + 3);
 
-  ctx.strokeStyle = cssVar('--warn');
+  ctx.strokeStyle = cssVar('--ochre');
   ctx.setLineDash([2, 3]);
   ctx.beginPath();
   ctx.moveTo(left, y(WEAK_THRESHOLD));
   ctx.lineTo(width - right, y(WEAK_THRESHOLD));
   ctx.stroke();
   ctx.setLineDash([]);
-  ctx.fillStyle = cssVar('--warn');
+  ctx.fillStyle = cssVar('--ochre');
   ctx.textAlign = 'left';
   ctx.fillText('weak', left + 4, y(WEAK_THRESHOLD) - 4);
 
   if (points.length) {
-    ctx.strokeStyle = cssVar('--ac');
+    ctx.strokeStyle = cssVar('--sage');
     ctx.lineWidth = 1.8;
     ctx.beginPath();
     points.forEach(([rho, corr], i) => {
@@ -209,7 +209,7 @@ export function drawFirstStageCurve(canvas, points, selectedRho) {
     });
     ctx.stroke();
 
-    ctx.fillStyle = cssVar('--ac');
+    ctx.fillStyle = cssVar('--sage');
     for (const [rho, corr] of points) {
       ctx.beginPath();
       ctx.arc(x(rho), y(corr), 1.8, 0, Math.PI * 2);
@@ -220,11 +220,11 @@ export function drawFirstStageCurve(canvas, points, selectedRho) {
   const current = points.find(([rho]) => Math.abs(rho - selectedRho) < 1e-3);
   if (!current) return;
 
-  ctx.fillStyle = cssVar('--tx');
+  ctx.fillStyle = cssVar('--ink');
   ctx.beginPath();
   ctx.arc(x(current[0]), y(current[1]), 4.5, 0, Math.PI * 2);
   ctx.fill();
-  ctx.strokeStyle = cssVar('--bd');
+  ctx.strokeStyle = cssVar('--rule');
   ctx.setLineDash([2, 2]);
   ctx.beginPath();
   ctx.moveTo(x(current[0]), y(current[1]));

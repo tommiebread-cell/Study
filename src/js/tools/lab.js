@@ -12,10 +12,10 @@ import { drawDistributions, drawFirstStageCurve, cssVar } from '../plots.js';
 import { qs, verdict, chunked } from './dom.js';
 
 const SERIES = [
-  { key: 'ols', name: 'pooled OLS', color: '--warn' },
-  { key: 'fe', name: 'fixed effects', color: '--info' },
-  { key: 'diff', name: 'Difference GMM', color: '--ac' },
-  { key: 'sys', name: 'System GMM', color: '--succ' }
+  { key: 'ols', name: 'pooled OLS', color: '--ochre' },
+  { key: 'fe', name: 'fixed effects', color: '--slate' },
+  { key: 'diff', name: 'Difference GMM', color: '--sage' },
+  { key: 'sys', name: 'System GMM', color: '--moss' }
 ];
 
 export function monteCarlo(slot) {

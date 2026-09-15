@@ -11,14 +11,15 @@ import { openNote, currentId } from '../router.js';
 import { cssVar, prepareCanvas } from '../plots.js';
 
 export const FOLDER_COLOR = {
-  Setup: '--info',
-  Estimators: '--ac',
-  Practice: '--warn',
-  Review: '--succ',
-  Literature: '--tx2'
+  Daily: '--ink',
+  Setup: '--slate',
+  Estimators: '--sage',
+  Practice: '--ochre',
+  Review: '--moss',
+  Literature: '--ink-4'
 };
 
-const colorFor = (folder) => cssVar(FOLDER_COLOR[folder] || '--tx2');
+const colorFor = (folder) => cssVar(FOLDER_COLOR[folder] || '--ink-3');
 
 /* ---------------------------------------------------------------- local ---- */
 
@@ -38,7 +39,7 @@ export function drawLocalGraph(canvas, id) {
     const x = cx + Math.cos(angle) * radius;
     const y = cy + Math.sin(angle) * radius;
 
-    ctx.strokeStyle = cssVar('--bd');
+    ctx.strokeStyle = cssVar('--rule');
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(cx, cy);
@@ -50,25 +51,31 @@ export function drawLocalGraph(canvas, id) {
     ctx.arc(x, y, 4.5, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = cssVar('--tx2');
+    ctx.fillStyle = cssVar('--ink-3');
     ctx.font = '9.5px -apple-system, system-ui, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(byId.get(target).title.slice(0, 15), x, y - 8);
     hits.push({ x, y, id: target });
   });
 
-  ctx.fillStyle = cssVar('--ac');
+  ctx.fillStyle = cssVar('--sage');
   ctx.beginPath();
   ctx.arc(cx, cy, 6.5, 0, Math.PI * 2);
   ctx.fill();
 
-  ctx.fillStyle = cssVar('--tx');
+  // The centre label sits among the neighbour labels, so give it a paper
+  // backing rather than letting two names overprint each other.
+  const centreLabel = (byId.get(id)?.title ?? id).slice(0, 18);
   ctx.font = '600 10.5px -apple-system, system-ui, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText((byId.get(id)?.title ?? id).slice(0, 18), cx, cy + 19);
+  const labelWidth = ctx.measureText(centreLabel).width;
+  ctx.fillStyle = cssVar('--paper-2');
+  ctx.fillRect(cx - labelWidth / 2 - 4, cy + 10, labelWidth + 8, 14);
+  ctx.fillStyle = cssVar('--ink');
+  ctx.fillText(centreLabel, cx, cy + 20);
 
   if (!neighbours.length) {
-    ctx.fillStyle = cssVar('--tx3');
+    ctx.fillStyle = cssVar('--ink-4');
     ctx.font = '11px -apple-system, system-ui, sans-serif';
     ctx.fillText('no links', cx, cy + 34);
   }
@@ -210,7 +217,7 @@ export function createGraphView({ overlay, canvas, legend, closeButton }) {
       const q = index.get(b);
       if (!p || !q || !isVisible(p) || !isVisible(q)) continue;
       const hot = hovered && near.has(a) && near.has(b);
-      ctx.strokeStyle = hot ? cssVar('--ac2') : cssVar('--bd');
+      ctx.strokeStyle = hot ? cssVar('--sage-deep') : cssVar('--rule');
       ctx.lineWidth = hot ? 1.4 : 0.8;
       ctx.beginPath();
       ctx.moveTo(p.x, p.y);
@@ -231,14 +238,14 @@ export function createGraphView({ overlay, canvas, legend, closeButton }) {
       ctx.fill();
 
       if (node.id === current) {
-        ctx.strokeStyle = cssVar('--tx');
+        ctx.strokeStyle = cssVar('--ink');
         ctx.lineWidth = 1.6;
         ctx.beginPath();
         ctx.arc(node.x, node.y, r + 3.5, 0, Math.PI * 2);
         ctx.stroke();
       }
 
-      ctx.fillStyle = cssVar(dimmed ? '--tx3' : '--tx2');
+      ctx.fillStyle = cssVar(dimmed ? '--ink-4' : '--ink-3');
       const bold = node.id === current || (hovered && node.id === hovered.id);
       ctx.font = `${bold ? '600 ' : ''}11px -apple-system, system-ui, sans-serif`;
       ctx.textAlign = 'center';

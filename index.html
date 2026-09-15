@@ -3,38 +3,30 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="light dark">
-<meta name="description" content="An interactive vault for dynamic panel estimation: Nickell bias, Difference and System GMM, diagnostics, and a live simulation lab.">
+<meta name="color-scheme" content="light">
+<meta name="description" content="A study vault for dynamic panel estimation — a daily planner, a Pomodoro timer, and twenty-six linked notes on Nickell bias, Difference and System GMM, with a live simulation lab.">
 <title>Dynamic Panel Vault</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..600;1,400..600&family=Plus+Jakarta+Sans:ital,wght@0,400..600;1,400..500&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="src/styles/tokens.css">
 <link rel="stylesheet" href="src/styles/app.css">
 </head>
 <body>
 <div class="app">
   <nav class="ribbon" aria-label="Vault actions">
-    <button class="rb" id="ribbonNav" title="Toggle the note list" aria-label="Toggle the note list">
-      <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2.5" width="12" height="11" rx="1.5"/><path d="M6.4 2.5v11"/></svg>
-    </button>
-    <button class="rb" id="ribbonPalette" title="Quick switcher (Ctrl+P)" aria-label="Quick switcher">
-      <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="4.2"/><path d="M10.2 10.2 14 14"/></svg>
-    </button>
-    <button class="rb" id="ribbonGraph" title="Graph view (Ctrl+G)" aria-label="Graph view">
-      <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="3.6" r="2"/><circle cx="3.4" cy="12" r="1.8"/><circle cx="12.6" cy="11" r="1.8"/><path d="M6.9 5.3 4.3 10.3M9.4 5.2l2.4 4.1M5.2 12.2h5.6"/></svg>
-    </button>
-    <button class="rb" id="ribbonHome" title="Back to Start here" aria-label="Back to Start here">
-      <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 6.9 8 2.6l5.4 4.3v6.1a.5.5 0 0 1-.5.5H3.1a.5.5 0 0 1-.5-.5Z"/><path d="M6.3 13.5V9.4h3.4v4.1"/></svg>
-    </button>
-    <button class="rb" id="sidebarToggle" title="Toggle the note panel" aria-label="Toggle the note panel">
-      <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2.5" width="12" height="11" rx="1.5"/><path d="M9.6 2.5v11"/></svg>
-    </button>
-    <button class="rb bot" id="ribbonTheme" title="Toggle light and dark" aria-label="Toggle light and dark">
-      <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9.9 2.4a5.8 5.8 0 1 0 3.8 7.3 4.9 4.9 0 0 1-3.8-7.3Z"/></svg>
-    </button>
+    <button class="rb" id="ribbonNav" data-icon="panel-left" title="Toggle the note list" aria-label="Toggle the note list"></button>
+    <button class="rb" id="ribbonPalette" data-icon="search" title="Quick switcher (Ctrl+P)" aria-label="Quick switcher"></button>
+    <button class="rb" id="ribbonGraph" data-icon="network" title="Graph view (Ctrl+G)" aria-label="Graph view"></button>
+    <button class="rb" id="ribbonHome" data-icon="house" title="Back to Today" aria-label="Back to Today"></button>
+    <button class="rb bot" id="sidebarToggle" data-icon="panel-right" title="Toggle the note panel" aria-label="Toggle the note panel"></button>
   </nav>
 
   <aside class="side left" aria-label="Note list">
-    <div class="sh">Vault<button class="x" id="navClose" title="Close" aria-label="Close the note list">×</button></div>
-    <div class="srch"><input id="filter" type="search" placeholder="Filter notes" aria-label="Filter notes"></div>
+    <div class="sh">Vault<button class="x" id="navClose" data-icon="x" title="Close" aria-label="Close the note list"></button></div>
+    <div class="srch" data-icon="search">
+      <input id="filter" type="search" placeholder="Filter notes" aria-label="Filter notes">
+    </div>
     <div class="tree" id="tree"></div>
   </aside>
 
@@ -71,7 +63,7 @@
 <div class="ov" id="graphOverlay" aria-hidden="true">
   <div class="gwrap" role="dialog" aria-modal="true" aria-label="Graph view">
     <div class="gh">
-      <b>Graph view</b>
+      <b>Graph</b>
       <span id="graphLegend"></span>
       <button class="btn push" id="graphClose">Close</button>
     </div>
@@ -82,8 +74,8 @@
 <div class="peek" id="peek" role="tooltip"></div>
 
 <noscript>
-  <p class="noscript">This vault is an interactive study tool — the notes, the simulation lab and
-  the graph are all built in the browser, so it needs JavaScript enabled.</p>
+  <p class="noscript">This vault is an interactive study tool — the planner, the timer, the notes
+  and the simulation lab are all built in the browser, so it needs JavaScript enabled.</p>
 </noscript>
 
 <script type="module" src="src/js/main.js"></script>

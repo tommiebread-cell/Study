@@ -8,6 +8,7 @@ import { openNote, start, closePane, closeOthers, currentId, activeIndex } from 
 import { session, load as loadSession, markRead, clearRead, onSessionChange } from './session.js';
 import { observe as observeMaths } from './mathify.js';
 import { enableAskWhenAvailable } from './ask.js';
+import { icon } from './icons.js';
 import { createPanes } from './ui/panes.js';
 import { createExplorer } from './ui/explorer.js';
 import { createPalette } from './ui/palette.js';
@@ -16,49 +17,17 @@ import { createPeek } from './ui/peek.js';
 
 const $ = (id) => document.getElementById(id);
 
-const HOME = 'start-here';
-const THEME_KEY = 'gmm-vault/theme/v1';
-
-/* ---------------------------------------------------------------- theme ---- */
-
-function readStoredTheme() {
-  try {
-    return localStorage.getItem(THEME_KEY);
-  } catch {
-    return null;
-  }
-}
-
-function applyTheme(theme) {
-  document.documentElement.dataset.theme = theme;
-  try {
-    localStorage.setItem(THEME_KEY, theme);
-  } catch {
-    // Storage blocked; the choice just will not survive a reload.
-  }
-}
-
-/** What the page is actually showing right now, stamped or inherited. */
-function effectiveTheme() {
-  const stamped = document.documentElement.dataset.theme;
-  if (stamped === 'light' || stamped === 'dark') return stamped;
-  return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-}
-
-/**
- * Only stamp when the reader has chosen before. Left unstamped, the host's
- * theme governs — which is what a viewer that sets its own theme expects.
- */
-function restoreTheme() {
-  const stored = readStoredTheme();
-  if (stored === 'light' || stored === 'dark') document.documentElement.dataset.theme = stored;
-}
+const HOME = 'today';
 
 /* ------------------------------------------------------------------ boot ---- */
 
 loadSession();
-restoreTheme();
 enableAskWhenAvailable();
+
+// The shell's icons live in one place; the markup only names them.
+for (const host of document.querySelectorAll('[data-icon]')) {
+  host.insertAdjacentHTML('afterbegin', icon(host.dataset.icon));
+}
 
 observeMaths($('panes'));
 
@@ -81,11 +50,6 @@ const graphView = createGraphView({
   closeButton: $('graphClose')
 });
 
-const toggleTheme = () => {
-  applyTheme(effectiveTheme() === 'light' ? 'dark' : 'light');
-  panes.refresh();
-};
-
 const palette = createPalette({
   overlay: $('paletteOverlay'),
   input: $('paletteInput'),
@@ -94,9 +58,9 @@ const palette = createPalette({
     { label: 'Run a new simulation', run: runSimulation },
     { label: 'Open graph view', run: () => graphView.open() },
     { label: 'Open a random note', run: () => openNote(NOTES[Math.floor(Math.random() * NOTES.length)].id) },
-    { label: 'Go to Start here', run: () => openNote(HOME) },
+    { label: 'Go to Today', run: () => openNote(HOME) },
+    { label: 'Open the reading order', run: () => openNote('start-here') },
     { label: 'Open review queue', run: () => openNote('review') },
-    { label: 'Toggle light and dark', run: toggleTheme },
     { label: 'Mark this note read', run: () => markRead(currentId()) },
     { label: 'Mark every note unread', run: clearRead },
     { label: 'Close all panes but this one', run: closeOthers },
@@ -194,7 +158,6 @@ $('ribbonPalette').onclick = () => palette.open();
 $('statusPalette').onclick = () => palette.open();
 $('ribbonGraph').onclick = () => graphView.open();
 $('ribbonHome').onclick = () => openNote(HOME);
-$('ribbonTheme').onclick = toggleTheme;
 $('sidebarToggle').onclick = () => document.body.classList.toggle('aside');
 
 /* ----------------------------------------------------------- status bar ---- */

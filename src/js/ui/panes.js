@@ -11,6 +11,7 @@ import { byId, renderBody, backlinks, outgoing, escapeHtml } from '../graph.js';
 import { openNote, closePane, focusPane, subscribe, activeIndex } from '../router.js';
 import { isRead, toggleRead, onSessionChange } from '../session.js';
 import { mathify } from '../mathify.js';
+import { icon } from '../icons.js';
 import { mountTools } from '../tools/index.js';
 import { createAskPanel } from '../ask.js';
 import { drawLocalGraph } from './graphview.js';
@@ -18,25 +19,46 @@ import { drawLocalGraph } from './graphview.js';
 export function createPanes({ container, tabs, outline, localGraph, backlinksBox, outlinksBox }) {
   let headings = [];
 
+  /** Callouts carry their kind in data-t; the icon comes from here, not the copy. */
+  const CALLOUT_ICON = {
+    warn: 'triangle-alert',
+    dang: 'circle-x',
+    succ: 'circle-check',
+    quote: 'arrow-right'
+  };
+
+  function decorateCallouts(pane) {
+    for (const callout of pane.querySelectorAll('.callout')) {
+      const title = callout.querySelector('.ct');
+      if (!title) continue;
+      title.insertAdjacentHTML('afterbegin', icon(CALLOUT_ICON[callout.dataset.t] ?? 'arrow-right'));
+    }
+  }
+
   function paneMarkup(note, index, total) {
     const read = isRead(note.id);
     const tags = note.tags.map((tag) =>
       `<button class="tg" data-tag="${escapeHtml(tag)}">#${escapeHtml(tag)}</button>`).join('');
     const count = backlinks(note.id).length;
+    // A note that opens with its own hero supplies the page's title itself;
+    // stacking the pane's h1 above it gives the page two competing headings.
+    const lede = note.tools?.[0] === 'hero'
+      ? ''
+      : `<h1>${escapeHtml(note.title)}</h1>
+         <div class="meta">${tags}<span class="mini">${count} backlink${count === 1 ? '' : 's'}</span></div>`;
 
     return `
       <div class="ph">
         <span class="crumb">${escapeHtml(note.folder)} / ${escapeHtml(note.title)}</span>
         <button class="pb ask-toggle" data-ask-toggle aria-expanded="false"
-                title="Ask Claude about this note">✳ ask</button>
+                title="Ask Claude about this note">${icon('message-square')}Ask</button>
         <button class="pb${read ? ' rd' : ''}" data-read="${escapeHtml(note.id)}"
-                aria-pressed="${read}">${read ? '✓ read' : '○ read'}</button>
+                aria-pressed="${read}">${icon(read ? 'circle-check' : 'circle')}Read</button>
         ${total > 1 ? `<button class="pb" data-close="${index}" title="Close pane"
-                               aria-label="Close ${escapeHtml(note.title)}">×</button>` : ''}
+                               aria-label="Close ${escapeHtml(note.title)}">${icon('x')}</button>` : ''}
       </div>
       <div class="pbody" tabindex="-1">
-        <h1>${escapeHtml(note.title)}</h1>
-        <div class="meta">${tags}<span class="mini">${count} backlink${count === 1 ? '' : 's'}</span></div>
+        ${lede}
         ${renderBody(note.body)}
       </div>`;
   }
@@ -50,6 +72,7 @@ export function createPanes({ container, tabs, outline, localGraph, backlinksBox
     pane.innerHTML = paneMarkup(note, index, total);
 
     mathify(pane);
+    decorateCallouts(pane);
     mountTools(pane, note);
 
     const body = pane.querySelector('.pbody');
@@ -57,7 +80,9 @@ export function createPanes({ container, tabs, outline, localGraph, backlinksBox
     // Only reachable once the runtime grants sampling; CSS hides the toggle
     // until then, so a pane built early behaves like one built late.
     const askPanel = createAskPanel(id);
-    body.insertBefore(askPanel, body.querySelector('.meta').nextSibling);
+    const meta = body.querySelector('.meta');
+    if (meta) body.insertBefore(askPanel, meta.nextSibling);
+    else body.insertBefore(askPanel, body.firstChild);
     pane.querySelector('[data-ask-toggle]').onclick = (event) => {
       askPanel.hidden = !askPanel.hidden;
       event.currentTarget.setAttribute('aria-expanded', String(!askPanel.hidden));
@@ -84,13 +109,13 @@ export function createPanes({ container, tabs, outline, localGraph, backlinksBox
     const read = isRead(note.id);
     readButton.classList.toggle('rd', read);
     readButton.setAttribute('aria-pressed', String(read));
-    readButton.textContent = read ? '✓ read' : '○ read';
+    readButton.innerHTML = `${icon(read ? 'circle-check' : 'circle')}Read`;
 
     const closeButton = pane.querySelector('[data-close]');
     if (total > 1 && !closeButton) {
       pane.querySelector('.ph').insertAdjacentHTML('beforeend',
         `<button class="pb" data-close="${index}" title="Close pane"
-                 aria-label="Close ${escapeHtml(note.title)}">×</button>`);
+                 aria-label="Close ${escapeHtml(note.title)}">${icon('x')}</button>`);
     } else if (total > 1) {
       closeButton.dataset.close = String(index);
     } else if (closeButton) {
@@ -117,7 +142,7 @@ export function createPanes({ container, tabs, outline, localGraph, backlinksBox
     tabs.innerHTML = stack.map((id, i) => {
       const note = byId.get(id);
       const closer = i === active && stack.length > 1
-        ? ` <span class="c" data-close="${i}" role="presentation">×</span>`
+        ? `<span class="c" data-close="${i}" role="presentation">${icon('x')}</span>`
         : '';
       return `<button class="tb${i === active ? ' on' : ''}" data-tab="${i}"
                       aria-current="${i === active}">${escapeHtml(note.title)}${closer}</button>`;

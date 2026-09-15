@@ -1,13 +1,19 @@
 # GMM vault
 
-An interactive study vault for **dynamic panel estimation** — models with a lagged dependent
-variable, a fixed effect, and too few time periods to ignore the interaction between them:
+A study vault for **dynamic panel estimation**, in a warm editorial interface: cream paper,
+charcoal ink, one sage accent, and structure carried by hairline rules rather than cards.
+
+It opens on **Today** — a serif hero, a daily planner and a Pomodoro timer — and from there into
+the notes.
+
+The econometrics underneath: models with a lagged dependent variable, a fixed effect, and too few
+time periods to ignore the interaction between them.
 
 ```
 y_it = rho * y_i,t-1 + X_it * beta + mu_i + u_it
 ```
 
-Twenty-five linked notes covering Nickell bias, Difference and System GMM, the moment conditions,
+Twenty-six linked notes covering Nickell bias, Difference and System GMM, the moment conditions,
 instrument proliferation and the diagnostics — plus a simulation lab that generates panels in the
 browser and estimates them four ways, live.
 
@@ -24,11 +30,40 @@ npm run build       # dist/vault.html — one self-contained file, opens from di
 
 During development the vault is plain ES modules, which browsers refuse to load over `file://`,
 so `npm start` serves them. `npm run build` rolls everything — 20 modules, both stylesheets — into
-a single ~145 KB HTML file with no external references, which you can double-click, email, or drop
+a single ~165 KB HTML file with no external references, which you can double-click, email, or drop
 on any static host.
 
 `npm run build:artifact` emits the same page without a `<!doctype>`/`<head>`/`<body>` of its own,
 which is the shape claude.ai expects when publishing it as an Artifact.
+
+## Design system
+
+| | |
+| --- | --- |
+| Paper | `#FBFBF9`, with `#F5F5F1` / `#EEEEE8` for sunk surfaces |
+| Ink | `#1A1A1A`, warming to `#57574F` and `#8A8A80` as it lightens |
+| Accent | Sage `#607764`, deepening to `#4A5E4E` |
+| Rules | `#E5E5E0`, one step stronger at `#D3D3CB` |
+| Semantics | moss, ochre, slate, brick — low-chroma, never standing in for the accent |
+| Display | Playfair Display, for headings and the maths |
+| Body | Plus Jakarta Sans |
+| Code | IBM Plex Mono |
+
+Radii never exceed 4px, borders stay hairline, and the only two elements with a shadow are the
+palette and the graph overlay — the two things that genuinely float. Icons are inline Lucide SVG
+(`src/js/icons.js`); there are no emoji or dingbats anywhere in the interface.
+
+The palette is a single committed light theme rather than a light/dark pair, so every colour is
+painted explicitly and nothing is inherited from the host.
+
+## Today
+
+`src/js/tools/today.js` holds the three daily tools — the hero, the planner and the timer — as
+ordinary vault tools, so they live inside a note pane like everything else rather than floating
+above the page as widgets.
+
+Tasks and the focus tally are per-viewer, saved to `localStorage` inside a try/catch, and the
+Pomodoro count resets on a new local day.
 
 ## Asking Claude
 
@@ -45,10 +80,11 @@ Nothing else in the vault depends on it.
 ```
 index.html                     shell: markup only, no inline script or style
 src/
-  styles/tokens.css            design tokens, dark and light
+  styles/tokens.css            design tokens: paper, ink, sage, rules, type
   styles/app.css               layout and components
   js/
-    notes.js                   vault content: 25 notes with [[wikilinks]]
+    notes.js                   vault content: 26 notes with [[wikilinks]]
+    icons.js                   the Lucide set the interface uses
     graph.js                   link graph, backlinks, edge list, rendering
     router.js                  the pane stack — the only navigation state
     session.js                 read marks, quiz answers, flagged cards, runs
@@ -57,7 +93,7 @@ src/
     plots.js                   canvas helpers and the two charts
     main.js                    wiring
     ui/                        panes, explorer, palette, graph view, hover peek
-    tools/                     the thirteen interactive widgets
+    tools/                     the sixteen interactive widgets, today.js included
     sim/                       rng.js, linalg.js, gmm.js  ← the JS estimator
     snippets.generated.js      built by tools/snippets.mjs — do not edit
 reference/
@@ -92,7 +128,7 @@ toolchain is skipped with a note; a toolchain that is present and disagrees is a
 ## Verifying
 
 ```bash
-npm test              # 27 tests: the estimators, the link graph, the snippets
+npm test              # 28 tests: the estimators, the link graph, the snippets
 npm run crosscheck    # the three implementations against each other
 npm run check:snippets
 npm run verify        # all of the above
@@ -130,4 +166,5 @@ the lag, no time dummies and no test statistics. It is a bias-and-spread machine
 intuition, not a replacement for `xtabond2` or `pgmm`. The Stata and R files are the ones you would
 actually point at data.
 
-Reading order starts at **Start here**; the graph view shows how the notes connect.
+The app opens on **Today**; the reading order starts at **Start here**, and the graph view shows
+how the notes connect.

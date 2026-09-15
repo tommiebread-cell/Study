@@ -21,9 +21,13 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const WIKILINK = /\[\[([a-z0-9:-]+)(?:\|[^\]]+)?\]\]/g;
 
 const KNOWN_TOOLS = new Set([
+  'hero', 'planner', 'pomodoro',
   'grid', 'nickell', 'counter', 'chooser', 'diag', 'code', 'walk',
   'impl', 'cards', 'quiz', 'queue', 'mc', 'weak'
 ]);
+
+// The two entry points: Today is where the app lands, Start here is the map.
+const ROOTS = new Set(['today', 'start-here']);
 
 test('every note has the fields the renderer needs', () => {
   for (const note of NOTES) {
@@ -58,9 +62,16 @@ test('every wikilink resolves', () => {
 
 test('no note is orphaned from the map of content', () => {
   for (const note of NOTES) {
-    if (note.id === 'start-here') continue;
+    if (ROOTS.has(note.id)) continue;
     assert.ok(BACK.get(note.id).length > 0, `${note.id} has no backlinks`);
   }
+});
+
+test('the landing note exists and carries the daily tools', () => {
+  const today = NOTES.find((note) => note.id === 'today');
+  assert.ok(today, 'there is no Today note to land on');
+  assert.deepEqual(today.tools, ['hero', 'planner', 'pomodoro']);
+  assert.equal(today.folder, 'Daily');
 });
 
 test('forward links and backlinks are consistent', () => {

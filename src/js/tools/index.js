@@ -7,8 +7,12 @@ import { grid, nickell, counter, chooser } from './structure.js';
 import { diagnostics, code, walkthrough, implementations } from './practice.js';
 import { cards, quiz, queue } from './drill.js';
 import { monteCarlo, weakInstruments } from './lab.js';
+import { hero, planner, pomodoro } from './today.js';
 
 export const TOOLS = {
+  hero,
+  planner,
+  pomodoro,
   grid,
   nickell,
   counter,
